@@ -9,7 +9,30 @@ const keywordMap: Record<string, string[]> = {
   '혈액': ['혈액', '혈행', '콜레스테롤', '혈압', '오메가', '혈중'],
 };
 
-// 길고 어려운 식약처 표현 → 짧고 친숙한 말
+const priorityMap: Record<string, string[]> = {
+  '피로': ['에너지', '피로'],
+  '수면': ['수면', '긴장', '신경'],
+  '체지방': ['체지방', '혈당', '지방'],
+  '면역': ['면역', '항산화'],
+  '관절': ['관절', '연골', '뼈', '칼슘'],
+  '혈액': ['혈액', '혈관', '혈행', '콜레스테롤', '혈압'],
+};
+
+const ingredientKeywords = [
+  '오메가3', '오메가', '유산균', '프로바이오틱스', '글루코사민', '마그네슘',
+  '비타민C', '비타민D', '비타민B', '종합비타민', '멀티비타민', '비타민',
+  '루테인', '밀크씨슬', '코엔자임', '아연', '칼슘', '철분', '엽산',
+  '홍삼', '프로폴리스', '콜라겐', '가르시니아', '크롬', '나토키나제',
+  '테아닌', 'MSM', '보스웰리아', '쏘팔메토', '아르기닌', '셀레늄',
+];
+
+function extractIngredient(product: string): string | null {
+  for (const ing of ingredientKeywords) {
+    if (product.includes(ing)) return ing;
+  }
+  return null;
+}
+
 const phraseMap: { from: RegExp; to: string }[] = [
   { from: /항산화\s*작용/, to: '세포 보호 (항산화)' },
   { from: /유해산소로부터\s*세포/, to: '세포 보호 (항산화)' },
@@ -47,12 +70,10 @@ const phraseMap: { from: RegExp; to: string }[] = [
   { from: /긴장\s*완화|스트레스/, to: '긴장 완화 도움' },
 ];
 
-// 사전에 있으면 친숙한 표현 반환, 없으면 null (= 버림)
 function toFriendly(text: string): string | null {
   for (const { from, to } of phraseMap) {
     if (from.test(text)) return to;
   }
-  // 사전에 없지만 충분히 짧고 깔끔하면(15자 이하) 그대로 사용
   const t = text.trim();
   if (t.length > 0 && t.length <= 15 && !t.includes('…')) return t;
   return null;
@@ -65,7 +86,7 @@ function cleanCompany(name: string): string {
     .trim();
 }
 
-function cleanFunction(text: string): string[] {
+function cleanFunction(text: string, keyword: string): string[] {
   if (!text) return [];
 
   let cleaned = text.replace(/\[.*?\]/g, '');
@@ -81,8 +102,16 @@ function cleanFunction(text: string): string[] {
     .replace(/,/g, '|')
     .replace(/:/g, '|');
 
-  const parts = cleaned
-    .split('|')
+  const rawParts = cleaned.split('|');
+
+  const priorities = priorityMap[keyword] || [];
+  rawParts.sort((a, b) => {
+    const aScore = priorities.some((p) => a.includes(p)) ? 0 : 1;
+    const bScore = priorities.some((p) => b.includes(p)) ? 0 : 1;
+    return aScore - bScore;
+  });
+
+  const parts = rawParts
     .map((s) => toFriendly(s))
     .filter((s): s is string => s !== null);
 
@@ -93,6 +122,13 @@ function isMostlyKorean(text: string): boolean {
   const korean = (text.match(/[가-힣]/g) || []).length;
   const english = (text.match(/[a-zA-Z]/g) || []).length;
   return korean >= english;
+}
+
+interface RealProductLike {
+  company: string;
+  product: string;
+  functions: string[];
+  title: string;
 }
 
 export async function GET(request: NextRequest) {
@@ -119,11 +155,20 @@ export async function GET(request: NextRequest) {
 
     const items = data?.body?.items || [];
 
-    const mapItem = (entry: { item: { ENTRPS?: string; PRDUCT?: string; MAIN_FNCTN?: string } }) => ({
-      company: cleanCompany(entry.item.ENTRPS || ''),
-      product: (entry.item.PRDUCT || '').trim(),
-      functions: cleanFunction(entry.item.MAIN_FNCTN || ''),
-    });
+    const mapItem = (entry: { item: { ENTRPS?: string; PRDUCT?: string; MAIN_FNCTN?: string } }): RealProductLike => {
+      const product = (entry.item.PRDUCT || '').trim();
+      const functions = cleanFunction(entry.item.MAIN_FNCTN || '', keyword);
+      const ingredient = extractIngredient(product);
+      const title = ingredient && functions.length > 0
+        ? `${ingredient} · ${functions[0]}`
+        : (functions[0] || '건강 기능성 제품');
+      return {
+        company: cleanCompany(entry.item.ENTRPS || ''),
+        product,
+        functions,
+        title,
+      };
+    };
 
     const isValid = (product: string) =>
       !product.includes('키즈') &&
@@ -135,7 +180,21 @@ export async function GET(request: NextRequest) {
       !product.includes('Export') &&
       isMostlyKorean(product);
 
-    let filtered = items
+    // 제목 중복 제거하면서 최대 3개 추리기
+    const pickUnique = (list: RealProductLike[]): RealProductLike[] => {
+      const seen = new Set<string>();
+      const result: RealProductLike[] = [];
+      for (const item of list) {
+        if (item.functions.length === 0) continue;
+        if (seen.has(item.title)) continue;
+        seen.add(item.title);
+        result.push(item);
+        if (result.length >= 3) break;
+      }
+      return result;
+    };
+
+    const matched = items
       .filter((entry: { item?: { MAIN_FNCTN?: string; PRDUCT?: string } }) => {
         const item = entry.item;
         if (!item) return false;
@@ -144,16 +203,16 @@ export async function GET(request: NextRequest) {
         if (!isValid(product)) return false;
         return searchKeywords.some((kw) => fnctn.includes(kw) || product.includes(kw));
       })
-      .map(mapItem)
-      .filter((item: RealProductLike) => item.functions.length > 0)
-      .slice(0, 3);
+      .map(mapItem);
 
-    if (filtered.length === 0) {
-      filtered = items
+    let filtered = pickUnique(matched);
+
+    if (filtered.length < 3) {
+      const fallback = items
         .filter((entry: { item?: { MAIN_FNCTN?: string; PRDUCT?: string } }) => entry.item?.MAIN_FNCTN && isValid(entry.item?.PRDUCT || ''))
-        .map(mapItem)
-        .filter((item: RealProductLike) => item.functions.length > 0)
-        .slice(0, 3);
+        .map(mapItem);
+      // 기존 것과 합쳐서 다시 중복 제거
+      filtered = pickUnique([...filtered, ...fallback]);
     }
 
     return new NextResponse(JSON.stringify({ items: filtered }), {
@@ -162,10 +221,4 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'API 호출 실패' }, { status: 500 });
   }
-}
-
-interface RealProductLike {
-  company: string;
-  product: string;
-  functions: string[];
 }

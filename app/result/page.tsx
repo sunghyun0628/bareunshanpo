@@ -1,10 +1,11 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import { BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, Pill, ChevronDown } from 'lucide-react';
 
-const results: Record<string, { emoji: string; desc: string; keyword: string; supplements: { name: string; reason: string; tag: string }[] }> = {
+const results: Record<string, { Icon: React.ComponentType<{ size?: number; strokeWidth?: number; style?: React.CSSProperties; className?: string }>; desc: string; keyword: string; supplements: { name: string; reason: string; tag: string }[] }> = {
   피로누적형: {
-    emoji: '😴',
+    Icon: BatteryLow,
     desc: '항상 피곤하고 기운이 없으신 부모님께 활력을 더해드리는 영양 조합입니다.',
     keyword: '피로',
     supplements: [
@@ -14,7 +15,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
     ],
   },
   수면부족형: {
-    emoji: '😪',
+    Icon: Moon,
     desc: '잠을 자도 개운하지 않으신 부모님의 편안한 숙면을 돕는 영양 조합입니다.',
     keyword: '수면',
     supplements: [
@@ -24,7 +25,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
     ],
   },
   다이어트형: {
-    emoji: '🥗',
+    Icon: Salad,
     desc: '체중 관리가 고민이신 부모님의 건강한 다이어트를 돕는 영양 조합입니다.',
     keyword: '체지방',
     supplements: [
@@ -34,7 +35,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
     ],
   },
   면역강화형: {
-    emoji: '🛡️',
+    Icon: Shield,
     desc: '잔병치레가 잦으신 부모님의 면역력을 키워주는 영양 조합입니다.',
     keyword: '면역',
     supplements: [
@@ -44,7 +45,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
     ],
   },
   관절케어형: {
-    emoji: '🦵',
+    Icon: Bone,
     desc: '무릎과 관절이 불편하신 부모님의 활동을 돕는 영양 조합입니다.',
     keyword: '관절',
     supplements: [
@@ -54,7 +55,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
     ],
   },
   혈관건강형: {
-    emoji: '❤️',
+    Icon: HeartPulse,
     desc: '혈압과 콜레스테롤이 걱정이신 부모님의 혈관 건강을 돕는 영양 조합입니다.',
     keyword: '혈액',
     supplements: [
@@ -69,12 +70,14 @@ interface RealProduct {
   company: string;
   product: string;
   functions: string[];
+  title: string;
 }
 
 function ResultContent() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || '피로누적형';
   const result = results[type] || results['피로누적형'];
+  const Icon = result.Icon;
 
   const [realProducts, setRealProducts] = useState<RealProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,7 +111,11 @@ function ResultContent() {
         </p>
 
         <div className="text-center py-12 rounded-3xl mb-8" style={{ backgroundColor: '#F2EBE3' }}>
-          <p className="text-6xl mb-4">{result.emoji}</p>
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FAF7F2' }}>
+              <Icon size={40} strokeWidth={1.5} style={{ color: '#5C3D2E' }} />
+            </div>
+          </div>
           <h1 className="text-4xl font-bold mb-4" style={{ color: '#3B2314' }}>{type}</h1>
           <p className="text-base leading-relaxed px-6" style={{ color: '#7A5C4E' }}>{result.desc}</p>
         </div>
@@ -155,15 +162,15 @@ function ResultContent() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">💊</span>
+                        <Pill size={24} strokeWidth={1.5} style={{ color: '#5C3D2E' }} className="flex-shrink-0" />
                         <div>
                           <p className="font-bold" style={{ color: '#3B2314' }}>
-                            {p.functions[0] || '건강 기능성 제품'}
+                              {p.title || '건강 기능성 제품'}
                           </p>
                           <p className="text-xs mt-1" style={{ color: '#9C7B6B' }}>식약처 인증 · 누르면 제품 정보 보기</p>
                         </div>
                       </div>
-                      <span style={{ color: '#9C7B6B', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+                      <ChevronDown size={20} style={{ color: '#9C7B6B', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} className="flex-shrink-0" />
                     </div>
                   </button>
 
