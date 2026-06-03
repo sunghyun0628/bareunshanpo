@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// 건강 유형별 검색 키워드 (여러 개 중 하나라도 매칭되면 표시)
 const keywordMap: Record<string, string[]> = {
   '피로': ['피로', '에너지', '활력', '비타민B', '항산화', '면역'],
   '수면': ['수면', '긴장', '스트레스', '테아닌', '마그네슘', '신경'],
@@ -9,6 +8,35 @@ const keywordMap: Record<string, string[]> = {
   '관절': ['관절', '뼈', '연골', '칼슘', '글루코사민', '근력'],
   '혈액': ['혈액', '혈행', '콜레스테롤', '혈압', '오메가', '혈중'],
 };
+
+function cleanCompany(name: string): string {
+  return name
+    .replace(/\(주\)|\(유\)|주식회사|유한회사/g, '')
+    .replace(/제\d+공장|\d+공장|세종\d+공장|본사/g, '')
+    .trim();
+}
+
+function cleanFunction(text: string): string[] {
+  if (!text) return [];
+
+  let cleaned = text.replace(/\[.*?\]/g, ''); // [비타민C] 제거
+
+  // 모든 숫자 기호를 공통 구분자(|)로 변환
+  cleaned = cleaned
+    .replace(/[①②③④⑤⑥⑦⑧⑨⑩]/g, '|')      // ①②③
+    .replace(/\(\d+\)/g, '|')                  // (1)(2)(3)
+    .replace(/⑴|⑵|⑶|⑷|⑸|⑹|⑺|⑻|⑼|⑽/g, '|')  // ⑴⑵⑶
+    .replace(/\d+\.\s/g, '|')                   // 1. 2.
+    .replace(/·/g, '|');                        // 가운뎃점
+
+  const parts = cleaned
+    .split('|')
+    .map((s) => s.replace(/에 도움을 줄 수 있음/g, '').trim()) // 반복 문구 제거
+    .map((s) => s.replace(/에 도움$/, '').trim())
+    .filter((s) => s.length > 3);
+
+  return parts.slice(0, 3);
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -34,11 +62,10 @@ export async function GET(request: NextRequest) {
 
     const items = data?.body?.items || [];
 
-    const mapItem = (entry: { item: { ENTRPS?: string; PRDUCT?: string; MAIN_FNCTN?: string; SRV_USE?: string } }) => ({
-      company: entry.item.ENTRPS || '',
+    const mapItem = (entry: { item: { ENTRPS?: string; PRDUCT?: string; MAIN_FNCTN?: string } }) => ({
+      company: cleanCompany(entry.item.ENTRPS || ''),
       product: entry.item.PRDUCT || '',
-      function: entry.item.MAIN_FNCTN || '',
-      usage: entry.item.SRV_USE || '',
+      functions: cleanFunction(entry.item.MAIN_FNCTN || ''),
     });
 
     let filtered = items
@@ -52,7 +79,6 @@ export async function GET(request: NextRequest) {
       .slice(0, 3)
       .map(mapItem);
 
-    // 키워드로 못 찾으면 대표 제품 3개라도 보여주기
     if (filtered.length === 0) {
       filtered = items
         .filter((entry: { item?: { MAIN_FNCTN?: string } }) => entry.item?.MAIN_FNCTN)

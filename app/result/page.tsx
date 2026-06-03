@@ -5,62 +5,62 @@ import { Suspense, useEffect, useState } from 'react';
 const results: Record<string, { emoji: string; desc: string; keyword: string; supplements: { name: string; reason: string; tag: string }[] }> = {
   피로누적형: {
     emoji: '😴',
-    desc: '만성 피로와 에너지 부족이 주요 증상입니다. 비타민B군과 철분이 도움이 됩니다.',
+    desc: '항상 피곤하고 기운이 없으신 부모님께 활력을 더해드리는 영양 조합입니다.',
     keyword: '피로',
     supplements: [
-      { name: '비타민B 컴플렉스', reason: '에너지 대사 촉진 및 피로 회복', tag: '필수' },
-      { name: '철분 + 비타민C', reason: '빈혈 예방 및 산소 운반 능력 향상', tag: '필수' },
-      { name: '코엔자임Q10', reason: '세포 에너지 생성 지원', tag: '권장' },
+      { name: '비타민B 컴플렉스', reason: '쉽게 지치지 않게 도와줘요', tag: '필수' },
+      { name: '철분 + 비타민C', reason: '기운이 나도록 도와줘요', tag: '필수' },
+      { name: '코엔자임Q10', reason: '몸에 활력을 더해줘요', tag: '권장' },
     ],
   },
   수면부족형: {
     emoji: '😪',
-    desc: '수면의 질이 낮고 숙면이 어려운 유형입니다. 마그네슘과 테아닌이 도움이 됩니다.',
+    desc: '잠을 자도 개운하지 않으신 부모님의 편안한 숙면을 돕는 영양 조합입니다.',
     keyword: '수면',
     supplements: [
-      { name: '마그네슘 300mg', reason: '근육 이완 및 수면 질 개선', tag: '필수' },
-      { name: 'L-테아닌', reason: '긴장 완화 및 숙면 유도', tag: '필수' },
-      { name: '비타민D 2000IU', reason: '수면 호르몬 조절 지원', tag: '권장' },
+      { name: '마그네슘', reason: '밤에 푹 주무시도록 도와줘요', tag: '필수' },
+      { name: 'L-테아닌', reason: '긴장을 풀고 편안하게 해줘요', tag: '필수' },
+      { name: '비타민D', reason: '수면 리듬을 맞춰줘요', tag: '권장' },
     ],
   },
   다이어트형: {
     emoji: '🥗',
-    desc: '체중 관리와 대사 개선이 필요한 유형입니다. 가르시니아와 CLA가 도움이 됩니다.',
+    desc: '체중 관리가 고민이신 부모님의 건강한 다이어트를 돕는 영양 조합입니다.',
     keyword: '체지방',
     supplements: [
-      { name: '가르시니아 캄보지아', reason: '지방 합성 억제 및 식욕 조절', tag: '필수' },
-      { name: 'CLA 1000mg', reason: '체지방 감소 및 근육량 유지', tag: '필수' },
-      { name: '크롬 피콜리네이트', reason: '혈당 조절 및 인슐린 감수성 개선', tag: '권장' },
+      { name: '가르시니아', reason: '뱃살 관리에 도움을 줘요', tag: '필수' },
+      { name: 'CLA', reason: '체지방을 줄이는 데 도움을 줘요', tag: '필수' },
+      { name: '크롬', reason: '식후 혈당 관리를 도와줘요', tag: '권장' },
     ],
   },
   면역강화형: {
     emoji: '🛡️',
-    desc: '면역력이 약하고 잦은 감기가 걱정인 유형입니다. 비타민C와 아연이 도움이 됩니다.',
+    desc: '잔병치레가 잦으신 부모님의 면역력을 키워주는 영양 조합입니다.',
     keyword: '면역',
     supplements: [
-      { name: '비타민C 1000mg', reason: '면역세포 활성화 및 항산화 작용', tag: '필수' },
-      { name: '아연 15mg', reason: '면역 기능 강화 및 상처 회복', tag: '필수' },
-      { name: '프로바이오틱스', reason: '장내 면역력 강화', tag: '권장' },
+      { name: '비타민C', reason: '감기를 이겨내도록 도와줘요', tag: '필수' },
+      { name: '아연', reason: '면역력을 튼튼하게 해줘요', tag: '필수' },
+      { name: '유산균', reason: '장 건강과 면역을 함께 챙겨줘요', tag: '권장' },
     ],
   },
   관절케어형: {
     emoji: '🦵',
-    desc: '관절통과 근육통이 주요 고민인 유형입니다. 칼슘과 글루코사민이 도움이 됩니다.',
+    desc: '무릎과 관절이 불편하신 부모님의 활동을 돕는 영양 조합입니다.',
     keyword: '관절',
     supplements: [
-      { name: '글루코사민 1500mg', reason: '연골 보호 및 관절 유연성 개선', tag: '필수' },
-      { name: '칼슘 + 비타민K2', reason: '뼈 강도 유지 및 골다공증 예방', tag: '필수' },
-      { name: '오메가3 1000mg', reason: '관절 염증 완화 및 통증 감소', tag: '권장' },
+      { name: '글루코사민', reason: '관절을 부드럽게 해줘요', tag: '필수' },
+      { name: '칼슘 + 비타민K', reason: '뼈를 튼튼하게 해줘요', tag: '필수' },
+      { name: '오메가3', reason: '관절 통증을 줄이는 데 도움을 줘요', tag: '권장' },
     ],
   },
   혈관건강형: {
     emoji: '❤️',
-    desc: '혈압과 콜레스테롤 관리가 필요한 유형입니다. 오메가3와 코엔자임Q10이 도움이 됩니다.',
+    desc: '혈압과 콜레스테롤이 걱정이신 부모님의 혈관 건강을 돕는 영양 조합입니다.',
     keyword: '혈액',
     supplements: [
-      { name: '오메가3 2000mg', reason: '중성지방 감소 및 혈관 건강 개선', tag: '필수' },
-      { name: '코엔자임Q10 100mg', reason: '심장 기능 강화 및 혈압 조절', tag: '필수' },
-      { name: '나토키나제', reason: '혈전 예방 및 혈액 순환 개선', tag: '권장' },
+      { name: '오메가3', reason: '혈관을 깨끗하게 도와줘요', tag: '필수' },
+      { name: '코엔자임Q10', reason: '심장 건강을 지켜줘요', tag: '필수' },
+      { name: '나토키나제', reason: '피가 잘 돌도록 도와줘요', tag: '권장' },
     ],
   },
 };
@@ -68,8 +68,7 @@ const results: Record<string, { emoji: string; desc: string; keyword: string; su
 interface RealProduct {
   company: string;
   product: string;
-  function: string;
-  usage: string;
+  functions: string[];
 }
 
 function ResultContent() {
@@ -131,13 +130,13 @@ function ResultContent() {
           ))}
         </div>
 
-        {/* 실제 식약처 인증 제품 */}
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-2">
           <h2 className="text-2xl font-bold" style={{ color: '#3B2314' }}>식약처 인증 제품</h2>
           <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ backgroundColor: '#E8DDD6', color: '#7A5C4E' }}>
             공공데이터 연동
           </span>
         </div>
+        <p className="text-sm mb-6" style={{ color: '#9C7B6B' }}>식약처에 등록된 실제 건강기능식품입니다</p>
 
         {loading ? (
           <div className="text-center py-12" style={{ color: '#9C7B6B' }}>제품 정보를 불러오는 중...</div>
@@ -146,10 +145,15 @@ function ResultContent() {
             {realProducts.map((p, i) => (
               <div key={i} className="p-6 rounded-2xl" style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6' }}>
                 <p className="text-xs mb-1" style={{ color: '#9C7B6B' }}>{p.company}</p>
-                <p className="font-bold mb-3" style={{ color: '#3B2314' }}>{p.product}</p>
-                <p className="text-sm leading-relaxed" style={{ color: '#7A5C4E' }}>
-                  {p.function.length > 100 ? p.function.slice(0, 100) + '...' : p.function}
-                </p>
+                <p className="font-bold mb-4 text-lg" style={{ color: '#3B2314' }}>{p.product}</p>
+                <div className="space-y-2">
+                  {p.functions.map((fn, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <span style={{ color: '#5C3D2E' }} className="font-bold flex-shrink-0">✓</span>
+                      <p className="text-sm leading-relaxed" style={{ color: '#7A5C4E' }}>{fn}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
