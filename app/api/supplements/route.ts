@@ -11,29 +11,51 @@ const keywordMap: Record<string, string[]> = {
 
 // 길고 어려운 식약처 표현 → 짧고 친숙한 말
 const phraseMap: { from: RegExp; to: string }[] = [
-  { from: /항산화\s*작용을\s*하여\s*유해산소로부터\s*세포를?\s*보호.*/, to: '세포 보호 (항산화)' },
-  { from: /결합조직\s*형성과\s*기능유지.*/, to: '피부·연골 건강' },
-  { from: /철의?\s*흡수.*/, to: '철분 흡수 도움' },
-  { from: /정상적인\s*면역기능.*/, to: '면역 기능 도움' },
-  { from: /정상적인\s*세포분열.*/, to: '세포 분열 도움' },
-  { from: /유산균\s*증식\s*및\s*유해균\s*억제.*배변활동.*/, to: '장 건강·배변 활동 도움' },
-  { from: /혈소판\s*응집\s*억제를?\s*통한\s*혈액흐름.*/, to: '혈액 순환 도움' },
-  { from: /식후\s*혈당상승\s*억제.*/, to: '식후 혈당 관리' },
-  { from: /체내\s*에너지\s*생성.*/, to: '에너지 생성 도움' },
-  { from: /탄수화물과?\s*에너지\s*대사.*/, to: '에너지 대사 도움' },
-  { from: /단백질\s*및\s*아미노산\s*이용.*/, to: '단백질 활용 도움' },
-  { from: /뼈의?\s*형성과\s*유지.*/, to: '뼈 건강 도움' },
-  { from: /칼슘과\s*인이?\s*흡수.*/, to: '칼슘 흡수 도움' },
-  { from: /기억력\s*개선.*/, to: '기억력 개선' },
-  { from: /면역력\s*증진.*/, to: '면역력 증진' },
-  { from: /피로\s*개선.*/, to: '피로 개선' },
+  { from: /항산화\s*작용/, to: '세포 보호 (항산화)' },
+  { from: /유해산소로부터\s*세포/, to: '세포 보호 (항산화)' },
+  { from: /결합조직\s*형성/, to: '피부·연골 건강' },
+  { from: /철의?\s*흡수/, to: '철분 흡수 도움' },
+  { from: /정상적인\s*면역/, to: '면역 기능 도움' },
+  { from: /면역\s*기능/, to: '면역 기능 도움' },
+  { from: /면역력\s*증진/, to: '면역력 증진' },
+  { from: /정상적인\s*세포분열/, to: '세포 분열 도움' },
+  { from: /유산균\s*증식/, to: '장 건강 도움' },
+  { from: /유해균\s*억제/, to: '유해균 억제' },
+  { from: /배변활동/, to: '배변 활동 도움' },
+  { from: /장\s*건강/, to: '장 건강 도움' },
+  { from: /혈소판\s*응집/, to: '혈액 순환 도움' },
+  { from: /혈액\s*흐름|혈행\s*개선/, to: '혈액 순환 도움' },
+  { from: /식후\s*혈당/, to: '식후 혈당 관리' },
+  { from: /혈중\s*콜레스테롤/, to: '콜레스테롤 관리' },
+  { from: /체지방\s*감소/, to: '체지방 감소 도움' },
+  { from: /체내\s*에너지/, to: '에너지 생성 도움' },
+  { from: /에너지\s*생성/, to: '에너지 생성 도움' },
+  { from: /탄수화물과?\s*에너지|에너지\s*대사/, to: '에너지 대사 도움' },
+  { from: /단백질\s*및\s*아미노산|단백질\s*이용/, to: '단백질 활용 도움' },
+  { from: /뼈의?\s*형성|뼈\s*건강/, to: '뼈 건강 도움' },
+  { from: /칼슘과\s*인|칼슘\s*흡수/, to: '칼슘 흡수 도움' },
+  { from: /골다공증/, to: '뼈 건강 도움' },
+  { from: /기억력/, to: '기억력 개선 도움' },
+  { from: /피로\s*개선|피로\s*회복/, to: '피로 개선 도움' },
+  { from: /눈\s*건강|시력/, to: '눈 건강 도움' },
+  { from: /간\s*건강|간\s*기능/, to: '간 건강 도움' },
+  { from: /혈압/, to: '혈압 관리 도움' },
+  { from: /근력|근육/, to: '근력 유지 도움' },
+  { from: /관절/, to: '관절 건강 도움' },
+  { from: /연골/, to: '연골 건강 도움' },
+  { from: /수면/, to: '수면 도움' },
+  { from: /긴장\s*완화|스트레스/, to: '긴장 완화 도움' },
 ];
 
-function applyPhraseMap(text: string): string {
+// 사전에 있으면 친숙한 표현 반환, 없으면 null (= 버림)
+function toFriendly(text: string): string | null {
   for (const { from, to } of phraseMap) {
     if (from.test(text)) return to;
   }
-  return text;
+  // 사전에 없지만 충분히 짧고 깔끔하면(15자 이하) 그대로 사용
+  const t = text.trim();
+  if (t.length > 0 && t.length <= 15 && !t.includes('…')) return t;
+  return null;
 }
 
 function cleanCompany(name: string): string {
@@ -55,28 +77,14 @@ function cleanFunction(text: string): string[] {
     .replace(/\d+\)\s/g, '|')
     .replace(/\d+\.\s/g, '|')
     .replace(/\//g, '|')
-    .replace(/·/g, '|');
+    .replace(/·/g, '|')
+    .replace(/,/g, '|')
+    .replace(/:/g, '|');
 
   const parts = cleaned
     .split('|')
-    .map((s) => {
-      let t = s.trim();
-      t = t.replace(/에 도움을 줄 수 있음/g, '');
-      t = t.replace(/에 필요/g, '');
-      t = t.replace(/하는데|되는데/g, '');
-      if (t.includes(':')) {
-        const [nutrient, effect] = t.split(':');
-        const shortEffect = (effect || '').split(',')[0].trim();
-        t = `${nutrient.trim()} - ${shortEffect}`;
-      }
-      t = t.split(',')[0].trim();
-      // 친숙한 표현으로 치환
-      t = applyPhraseMap(t);
-      // 그래도 길면 자름
-      if (t.length > 20) t = t.slice(0, 20) + '…';
-      return t;
-    })
-    .filter((s) => s.length > 2);
+    .map((s) => toFriendly(s))
+    .filter((s): s is string => s !== null);
 
   return [...new Set(parts)].slice(0, 3);
 }
@@ -136,14 +144,16 @@ export async function GET(request: NextRequest) {
         if (!isValid(product)) return false;
         return searchKeywords.some((kw) => fnctn.includes(kw) || product.includes(kw));
       })
-      .slice(0, 3)
-      .map(mapItem);
+      .map(mapItem)
+      .filter((item: RealProductLike) => item.functions.length > 0)
+      .slice(0, 3);
 
     if (filtered.length === 0) {
       filtered = items
         .filter((entry: { item?: { MAIN_FNCTN?: string; PRDUCT?: string } }) => entry.item?.MAIN_FNCTN && isValid(entry.item?.PRDUCT || ''))
-        .slice(0, 3)
-        .map(mapItem);
+        .map(mapItem)
+        .filter((item: RealProductLike) => item.functions.length > 0)
+        .slice(0, 3);
     }
 
     return new NextResponse(JSON.stringify({ items: filtered }), {
@@ -152,4 +162,10 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'API 호출 실패' }, { status: 500 });
   }
+}
+
+interface RealProductLike {
+  company: string;
+  product: string;
+  functions: string[];
 }
