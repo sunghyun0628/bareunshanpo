@@ -189,9 +189,9 @@ function ResultContent() {
           <div className="text-center py-8 mb-8" style={{ color: '#9C7B6B' }}>관련 제품을 찾을 수 없습니다.</div>
         )}
 
-        <button className="w-full py-5 rounded-full font-medium mb-4 hover:opacity-90 transition-opacity" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}>
+        <a href="/subscribe" className="block w-full text-center py-5 rounded-full font-medium mb-4 hover:opacity-90 transition-opacity" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}>
           이 조합으로 구독 시작하기
-        </button>
+        </a>
         <a href="/mbti" className="block w-full text-center py-5 rounded-full font-medium hover:opacity-70 transition-opacity" style={{ border: '1px solid #C4A898', color: '#7A5C4E' }}>
           다시 테스트하기
         </a>

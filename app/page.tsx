@@ -4,7 +4,6 @@ export default function Home() {
   return (
     <main style={{ fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", backgroundColor: '#FAF7F2' }} className="text-gray-900">
 
-      {/* 네비게이션 */}
       <nav style={{ backgroundColor: 'rgba(250,247,242,0.92)', borderBottom: '1px solid #E8DDD6' }} className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm px-8 py-5 flex items-center justify-between">
         <div className="text-xl font-bold" style={{ color: '#3B2314' }}>바른한포</div>
         <div className="hidden md:flex gap-10 text-sm font-medium" style={{ color: '#9C7B6B' }}>
@@ -13,12 +12,11 @@ export default function Home() {
           <a href="#mbti" className="hover:text-stone-900 transition-colors">건강 MBTI</a>
           <a href="#result" className="hover:text-stone-900 transition-colors">추천 결과</a>
         </div>
-        <a href="/mbti" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity">
+        <a href="/subscribe" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-6 py-3 rounded-full font-medium hover:opacity-90 transition-opacity">
           구독 시작하기
         </a>
       </nav>
 
-      {/* 히어로 */}
       <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
         <p className="text-sm font-semibold tracking-widest uppercase mb-8" style={{ color: '#9C7B6B' }}>
           식약처 공공데이터 기반 · 시니어 헬스케어
@@ -54,7 +52,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 서비스 소개 */}
       <section id="about" className="py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#9C7B6B' }}>WHY 바른한포</p>
@@ -78,7 +75,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 이용방법 */}
       <section id="how" className="py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#9C7B6B' }}>HOW IT WORKS</p>
@@ -102,7 +98,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 건강 MBTI */}
       <section id="mbti" className="py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
         <div className="max-w-4xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#9C7B6B' }}>건강 MBTI</p>
@@ -132,7 +127,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 추천 결과 */}
       <section id="result" className="py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
         <div className="max-w-2xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#9C7B6B' }}>RESULT</p>
@@ -171,19 +165,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-32 px-6 text-center" style={{ backgroundColor: '#3B2314' }}>
         <p className="text-xs font-bold tracking-widest uppercase mb-8" style={{ color: '#9C7B6B' }}>GET STARTED</p>
         <h2 className="text-6xl font-bold leading-none tracking-tighter mb-6" style={{ color: '#FAF7F2' }}>
           지금 바로<br />시작해보세요
         </h2>
         <p className="mb-12 text-lg" style={{ color: '#9C7B6B' }}>부모님께 드리는 가장 과학적인 선물</p>
-        <a href="/mbti" className="inline-block px-12 py-5 rounded-full text-base font-bold hover:opacity-90 transition-opacity" style={{ backgroundColor: '#FAF7F2', color: '#3B2314' }}>
+        <a href="/subscribe" className="inline-block px-12 py-5 rounded-full text-base font-bold hover:opacity-90 transition-opacity" style={{ backgroundColor: '#FAF7F2', color: '#3B2314' }}>
           구독 시작하기
         </a>
       </section>
 
-      {/* 푸터 */}
       <footer className="py-12 px-8" style={{ borderTop: '1px solid #E8DDD6', backgroundColor: '#FAF7F2' }}>
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div>
