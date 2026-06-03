@@ -78,6 +78,7 @@ function ResultContent() {
 
   const [realProducts, setRealProducts] = useState<RealProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -136,26 +137,53 @@ function ResultContent() {
             공공데이터 연동
           </span>
         </div>
-        <p className="text-sm mb-6" style={{ color: '#9C7B6B' }}>식약처에 등록된 실제 건강기능식품입니다</p>
+        <p className="text-sm mb-6" style={{ color: '#9C7B6B' }}>
+          {result.keyword === '체지방' ? '체중 관리' : result.keyword}에 도움을 주는 식약처 인증 제품을 찾았어요. 카드를 누르면 제품 정보를 볼 수 있어요.
+        </p>
 
         {loading ? (
           <div className="text-center py-12" style={{ color: '#9C7B6B' }}>제품 정보를 불러오는 중...</div>
         ) : realProducts.length > 0 ? (
           <div className="space-y-4 mb-8">
-            {realProducts.map((p, i) => (
-              <div key={i} className="p-6 rounded-2xl" style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6' }}>
-                <p className="text-xs mb-1" style={{ color: '#9C7B6B' }}>{p.company}</p>
-                <p className="font-bold mb-4 text-lg" style={{ color: '#3B2314' }}>{p.product}</p>
-                <div className="space-y-2">
-                  {p.functions.map((fn, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span style={{ color: '#5C3D2E' }} className="font-bold flex-shrink-0">✓</span>
-                      <p className="text-sm leading-relaxed" style={{ color: '#7A5C4E' }}>{fn}</p>
+            {realProducts.map((p, i) => {
+              const isOpen = openIndex === i;
+              return (
+                <div key={i} className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6' }}>
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    className="w-full text-left p-6"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">💊</span>
+                        <div>
+                          <p className="font-bold" style={{ color: '#3B2314' }}>
+                            {p.functions[0] || '건강 기능성 제품'}
+                          </p>
+                          <p className="text-xs mt-1" style={{ color: '#9C7B6B' }}>식약처 인증 · 누르면 제품 정보 보기</p>
+                        </div>
+                      </div>
+                      <span style={{ color: '#9C7B6B', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
                     </div>
-                  ))}
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-6 pb-6 pt-0" style={{ borderTop: '1px solid #F2EBE3' }}>
+                      <p className="text-xs mt-4 mb-1" style={{ color: '#9C7B6B' }}>{p.company}</p>
+                      <p className="font-bold mb-4" style={{ color: '#3B2314' }}>{p.product}</p>
+                      <div className="space-y-2">
+                        {p.functions.map((fn, idx) => (
+                          <div key={idx} className="flex items-start gap-2">
+                            <span style={{ color: '#5C3D2E' }} className="font-bold flex-shrink-0">✓</span>
+                            <p className="text-sm leading-relaxed" style={{ color: '#7A5C4E' }}>{fn}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8 mb-8" style={{ color: '#9C7B6B' }}>관련 제품을 찾을 수 없습니다.</div>
