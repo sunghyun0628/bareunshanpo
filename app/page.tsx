@@ -18,25 +18,43 @@ export default function Home() {
         </a>
       </nav>
 
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
-        <p className="text-xs md:text-sm font-semibold tracking-widest uppercase mb-6 md:mb-8" style={{ color: '#9C7B6B' }}>
-          식약처 공공데이터 기반 · 시니어 헬스케어
-        </p>
-        <h1 className="text-5xl md:text-8xl font-bold leading-tight md:leading-none tracking-tighter mb-6 md:mb-8" style={{ color: '#3B2314' }}>
-          하루 한 포,<br />
-          <span style={{ color: '#D4B8A8' }}>건강한 습관</span>
-        </h1>
-        <p className="text-base md:text-xl mb-10 md:mb-12 max-w-lg leading-relaxed" style={{ color: '#7A5C4E' }}>
-          부모님의 건강 상태를 분석해<br />
-          딱 맞는 영양제를 매달 배송해드립니다
-        </p>
-        <div className="flex gap-3 md:gap-4 flex-wrap justify-center">
-          <a href="/mbti" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="px-8 md:px-10 py-4 md:py-5 rounded-full text-sm md:text-base font-medium hover:opacity-90 transition-opacity">
-            지금 바로 시작하기
-          </a>
-          <a href="#about" style={{ border: '1px solid #C4A898', color: '#7A5C4E' }} className="px-8 md:px-10 py-4 md:py-5 rounded-full text-sm md:text-base font-medium hover:opacity-70 transition-opacity">
-            서비스 알아보기 →
-          </a>
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden">
+        {/* 배경 사진 */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "url('/hero.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: '75% center',
+            filter: 'brightness(1.05)',
+          }}
+        />
+        {/* 글씨가 잘 보이도록 따뜻한 어두운 막 */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(40,25,15,0.5), rgba(40,25,15,0.72))' }}
+        />
+        {/* 내용 */}
+        <div className="relative z-10 flex flex-col items-center">
+          <p className="text-xs md:text-sm font-semibold tracking-widest uppercase mb-6 md:mb-8" style={{ color: '#E0D2C5' }}>
+            식약처 공공데이터 기반 · 시니어 헬스케어
+          </p>
+          <h1 className="text-5xl md:text-8xl font-bold leading-tight md:leading-none tracking-tighter mb-6 md:mb-8" style={{ color: '#FAF7F2', textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}>
+            하루 한 포,<br />
+            <span style={{ color: '#E5C9B5' }}>건강한 습관</span>
+          </h1>
+          <p className="text-base md:text-xl mb-10 md:mb-12 max-w-lg leading-relaxed" style={{ color: '#EADFD5', textShadow: '0 1px 10px rgba(0,0,0,0.3)' }}>
+            부모님의 건강 상태를 분석해<br />
+            딱 맞는 영양제를 매달 배송해드립니다
+          </p>
+          <div className="flex gap-3 md:gap-4 flex-wrap justify-center">
+            <a href="/mbti" style={{ backgroundColor: '#FAF7F2', color: '#3B2314' }} className="px-8 md:px-10 py-4 md:py-5 rounded-full text-sm md:text-base font-medium hover:opacity-90 transition-opacity">
+              지금 바로 시작하기
+            </a>
+            <a href="#about" style={{ border: '1px solid rgba(250,247,242,0.6)', color: '#FAF7F2' }} className="px-8 md:px-10 py-4 md:py-5 rounded-full text-sm md:text-base font-medium hover:opacity-70 transition-opacity">
+              서비스 알아보기 →
+            </a>
+          </div>
         </div>
       </section>
 
