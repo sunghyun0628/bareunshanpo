@@ -91,8 +91,8 @@ export default function MBTIPage() {
 
   return (
     <main style={{ fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", backgroundColor: '#FAF7F2', minHeight: '100vh' }}>
-      <nav style={{ backgroundColor: 'rgba(250,247,242,0.92)', borderBottom: '1px solid #E8DDD6' }} className="px-8 py-5 flex items-center justify-between">
-        <a href="/" className="text-xl font-bold" style={{ color: '#3B2314' }}>바른한포</a>
+      <nav style={{ backgroundColor: 'rgba(250,247,242,0.92)', borderBottom: '1px solid #E8DDD6' }} className="px-5 md:px-8 py-4 md:py-5 flex items-center justify-between">
+        <a href="/" className="text-lg md:text-xl font-bold" style={{ color: '#3B2314' }}>바른한포</a>
         <p className="text-sm" style={{ color: '#9C7B6B' }}>{current + 1} / {questions.length}</p>
       </nav>
 
@@ -100,20 +100,20 @@ export default function MBTIPage() {
         <div style={{ backgroundColor: '#5C3D2E', height: '4px', width: `${progress}%`, transition: 'width 0.3s ease' }} />
       </div>
 
-      <div className="max-w-2xl mx-auto px-6 py-16">
-        <p className="text-sm font-bold tracking-widest uppercase mb-6" style={{ color: '#9C7B6B' }}>
+      <div className="max-w-2xl mx-auto px-6 py-10 md:py-16">
+        <p className="text-xs md:text-sm font-bold tracking-widest uppercase mb-4 md:mb-6" style={{ color: '#9C7B6B' }}>
           건강 MBTI · 질문 {current + 1}
         </p>
-        <h2 className="text-3xl font-bold mb-12 leading-tight" style={{ color: '#3B2314' }}>
+        <h2 className="text-2xl md:text-3xl font-bold mb-8 md:mb-12 leading-snug" style={{ color: '#3B2314' }}>
           {q.question}
         </h2>
 
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {q.options.map((option) => (
             <button
               key={option.text}
               onClick={() => setSelected(option.type)}
-              className="w-full text-left p-6 rounded-2xl transition-all"
+              className="w-full text-left p-4 md:p-6 rounded-2xl transition-all text-sm md:text-base"
               style={{
                 backgroundColor: selected === option.type ? '#5C3D2E' : '#FFFCF9',
                 color: selected === option.type ? '#FAF7F2' : '#3B2314',
@@ -128,7 +128,7 @@ export default function MBTIPage() {
         <button
           onClick={handleNext}
           disabled={!selected}
-          className="w-full mt-8 py-5 rounded-full font-medium"
+          className="w-full mt-6 md:mt-8 py-4 md:py-5 rounded-full font-medium"
           style={{
             backgroundColor: selected ? '#5C3D2E' : '#D4B8A8',
             color: '#FAF7F2',
