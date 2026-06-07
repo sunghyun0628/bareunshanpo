@@ -7,14 +7,41 @@ const plans = [
   { id: 'premium', name: '프리미엄', price: '39,900', desc: '온 가족 건강 관리', features: ['2인 건강 분석', '각각 맞춤 영양제 5종', '하루 1포 소분 배송', '약사 1:1 상담 월 2회'] },
 ];
 
+type DaumPostcodeData = { zonecode: string; roadAddress: string; jibunAddress: string };
+type DaumPostcode = { open: () => void };
+type DaumNamespace = { Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => DaumPostcode };
+
 export default function SubscribePage() {
   const [step, setStep] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState('standard');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [zonecode, setZonecode] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
+
+  const openPostcode = () => {
+    const run = () => {
+      const daum = (window as unknown as { daum: DaumNamespace }).daum;
+      new daum.Postcode({
+        oncomplete: (data) => {
+          setZonecode(data.zonecode);
+          setAddress(data.roadAddress);
+        },
+      }).open();
+    };
+    if ((window as unknown as { daum?: DaumNamespace }).daum) {
+      run();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+      script.onload = run;
+      document.body.appendChild(script);
+    }
+  };
 
   const handleSubmit = () => {
-    if (name && phone) {
+    if (name && phone && address && detailAddress) {
       setStep(3);
     }
   };
@@ -110,6 +137,43 @@ export default function SubscribePage() {
                   style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6', color: '#3B2314' }}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-bold mb-2" style={{ color: '#3B2314' }}>주소</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={zonecode}
+                    placeholder="우편번호"
+                    readOnly
+                    className="flex-1 p-4 rounded-2xl outline-none"
+                    style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6', color: '#3B2314' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={openPostcode}
+                    className="px-6 rounded-2xl font-medium whitespace-nowrap hover:opacity-90 transition-opacity"
+                    style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}
+                  >
+                    주소 검색
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  value={address}
+                  placeholder="기본 주소 (주소 검색을 눌러주세요)"
+                  readOnly
+                  className="w-full p-4 rounded-2xl outline-none mb-2"
+                  style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6', color: '#3B2314' }}
+                />
+                <input
+                  type="text"
+                  value={detailAddress}
+                  onChange={(e) => setDetailAddress(e.target.value)}
+                  placeholder="상세 주소 (동/호수 등)"
+                  className="w-full p-4 rounded-2xl outline-none"
+                  style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6', color: '#3B2314' }}
+                />
+              </div>
               <div className="p-4 rounded-2xl" style={{ backgroundColor: '#F2EBE3' }}>
                 <p className="text-sm" style={{ color: '#7A5C4E' }}>
                   선택한 플랜: <span className="font-bold">{plans.find((p) => p.id === selectedPlan)?.name}</span> ({plans.find((p) => p.id === selectedPlan)?.price}원/월)
@@ -122,9 +186,9 @@ export default function SubscribePage() {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={!name || !phone}
+                disabled={!name || !phone || !address || !detailAddress}
                 className="flex-1 py-5 rounded-full font-medium transition-opacity"
-                style={{ backgroundColor: name && phone ? '#5C3D2E' : '#D4B8A8', color: '#FAF7F2', cursor: name && phone ? 'pointer' : 'not-allowed' }}
+                style={{ backgroundColor: name && phone && address && detailAddress ? '#5C3D2E' : '#D4B8A8', color: '#FAF7F2', cursor: name && phone && address && detailAddress ? 'pointer' : 'not-allowed' }}
               >
                 신청 완료
               </button>
@@ -143,6 +207,7 @@ export default function SubscribePage() {
               <p className="font-bold mb-1" style={{ color: '#3B2314' }}>{plans.find((p) => p.id === selectedPlan)?.name} 플랜</p>
               <p className="text-sm" style={{ color: '#7A5C4E' }}>{plans.find((p) => p.id === selectedPlan)?.price}원 / 월</p>
               <p className="text-sm mt-3" style={{ color: '#7A5C4E' }}>신청자: {name} ({phone})</p>
+              <p className="text-sm mt-1" style={{ color: '#7A5C4E' }}>배송지: ({zonecode}) {address} {detailAddress}</p>
             </div>
             <a href="/" className="block w-full py-5 rounded-full font-medium hover:opacity-90 transition-opacity" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}>
               홈으로 돌아가기
