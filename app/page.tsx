@@ -1,5 +1,6 @@
 'use client';
 import { Stethoscope, Pill, Package, BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, MessageCircle, Bell } from 'lucide-react';
+import { Show, SignInButton, UserButton } from '@clerk/nextjs';
 
 export default function Home() {
   return (
@@ -13,13 +14,24 @@ export default function Home() {
           <a href="#mbti" className="hover:text-stone-900 transition-colors">건강 MBTI</a>
           <a href="#result" className="hover:text-stone-900 transition-colors">추천 결과</a>
         </div>
-        <a href="/subscribe" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-5 md:px-6 py-2.5 md:py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
-          구독 시작하기
-        </a>
+        <div className="flex items-center gap-3 md:gap-4">
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <button className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: '#7A5C4E' }}>
+                로그인
+              </button>
+            </SignInButton>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+          <a href="/subscribe" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-5 md:px-6 py-2.5 md:py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
+            구독 시작하기
+          </a>
+        </div>
       </nav>
 
       <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20 overflow-hidden">
-        {/* 배경 사진 */}
         <div
           className="absolute inset-0"
           style={{
@@ -29,12 +41,10 @@ export default function Home() {
             filter: 'brightness(1.05)',
           }}
         />
-        {/* 글씨가 잘 보이도록 가운데를 어둡게 */}
         <div
           className="absolute inset-0"
           style={{ background: 'radial-gradient(ellipse at center, rgba(30,18,10,0.72), rgba(30,18,10,0.45) 70%), linear-gradient(to bottom, rgba(40,25,15,0.4), rgba(40,25,15,0.65))' }}
         />
-        {/* 내용 */}
         <div className="relative z-10 flex flex-col items-center">
           <p className="text-xs md:text-sm font-semibold tracking-widest uppercase mb-6 md:mb-8" style={{ color: '#E0D2C5' }}>
             식약처 공공데이터 기반 · 시니어 헬스케어
