@@ -1,5 +1,5 @@
 'use client';
-import { Stethoscope, Pill, Package, BatteryLow, Moon, Salad, Shield, Bone, HeartPulse } from 'lucide-react';
+import { Stethoscope, Pill, Package, BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, MessageCircle, Bell } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -29,7 +29,7 @@ export default function Home() {
             filter: 'brightness(1.05)',
           }}
         />
-        {/* 글씨가 잘 보이도록 가운데를 어둡게 (찻잔이 어디 오든 글씨 안 겹치게) */}
+        {/* 글씨가 잘 보이도록 가운데를 어둡게 */}
         <div
           className="absolute inset-0"
           style={{ background: 'radial-gradient(ellipse at center, rgba(30,18,10,0.72), rgba(30,18,10,0.45) 70%), linear-gradient(to bottom, rgba(40,25,15,0.4), rgba(40,25,15,0.65))' }}
@@ -169,6 +169,38 @@ export default function Home() {
             <a href="/mbti" className="block w-full text-center mt-6 md:mt-8 py-4 md:py-5 rounded-full font-medium hover:opacity-90 transition-opacity" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}>
               나도 맞춤 처방 받기
             </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="pharmacist" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="inline-block text-xs font-bold px-4 py-1.5 rounded-full mb-6" style={{ backgroundColor: '#E8DDD6', color: '#7A5C4E' }}>
+            준비 중 · 오픈 예정
+          </span>
+          <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-4 md:mb-6" style={{ color: '#3B2314' }}>
+            약사가 직접<br />봐드릴 예정이에요
+          </h2>
+          <p className="text-sm md:text-base mb-12 md:mb-16 max-w-xl mx-auto leading-relaxed" style={{ color: '#9C7B6B' }}>
+            여러 영양제, 혹시 드시는 약과 부딪히진 않을까 걱정되셨죠?<br className="hidden md:block" />
+            전문 약사가 안전하게 봐드리는 1:1 상담을 곧 제공할 예정입니다.
+          </p>
+          <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-12 text-left">
+            {[
+              { Icon: Pill, title: '약물 상호작용 확인', desc: '복용 중인 약과 영양제가 부딪히지 않는지 약사가 확인합니다' },
+              { Icon: Shield, title: '안전한 조합 설계', desc: '건강 유형에 맞춰 과하지 않은 안전한 조합을 설계합니다' },
+              { Icon: MessageCircle, title: '1:1 질문', desc: '궁금한 점은 약사에게 직접 물어보고 답을 받을 수 있습니다' },
+            ].map((item) => (
+              <div key={item.title} className="p-6 md:p-8 rounded-3xl" style={{ backgroundColor: '#FFFCF9', border: '1px solid #E8DDD6' }}>
+                <item.Icon size={28} strokeWidth={1.5} style={{ color: '#5C3D2E' }} className="mb-4" />
+                <h3 className="text-base md:text-lg font-bold mb-2" style={{ color: '#3B2314' }}>{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#7A5C4E' }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="inline-flex items-center gap-2 px-8 md:px-10 py-4 md:py-5 rounded-full font-medium" style={{ backgroundColor: '#E8DDD6', color: '#7A5C4E' }}>
+            <Bell size={18} strokeWidth={1.5} />
+            약사 상담은 오픈 준비 중이에요
           </div>
         </div>
       </section>
