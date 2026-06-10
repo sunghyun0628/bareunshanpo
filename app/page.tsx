@@ -1,8 +1,9 @@
 'use client';
 import { Stethoscope, Pill, Package, BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, MessageCircle, Bell } from 'lucide-react';
-import { Show, SignInButton, UserButton } from '@clerk/nextjs';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Home() {
+  const { data: session } = useSession();
   return (
     <main style={{ fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", backgroundColor: '#FAF7F2' }} className="text-gray-900">
 
@@ -15,17 +16,25 @@ export default function Home() {
           <a href="#result" className="hover:text-stone-900 transition-colors">추천 결과</a>
         </div>
         <div className="flex items-center gap-3 md:gap-4">
-          <Show when="signed-out">
-            <SignInButton mode="modal">
-              <button className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: '#7A5C4E' }}>
-                로그인
+          {session?.user ? (
+            <div className="flex items-center gap-2 md:gap-3">
+              {session.user.image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={session.user.image} alt="" className="w-8 h-8 rounded-full" style={{ border: '1px solid #E8DDD6' }} />
+              )}
+              <span className="hidden md:inline text-sm font-medium" style={{ color: '#7A5C4E' }}>
+                {session.user.name}님
+              </span>
+              <button onClick={() => signOut()} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: '#9C7B6B' }}>
+                로그아웃
               </button>
-            </SignInButton>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-          <a href="/subscribe" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-5 md:px-6 py-2.5 md:py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
+            </div>
+          ) : (
+            <button onClick={() => signIn()} className="text-sm font-medium hover:opacity-70 transition-opacity" style={{ color: '#7A5C4E' }}>
+              로그인
+            </button>
+          )}
+          <a href="/mbti" style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }} className="text-sm px-5 md:px-6 py-2.5 md:py-3 rounded-full font-medium hover:opacity-90 transition-opacity whitespace-nowrap">
             구독 시작하기
           </a>
         </div>
@@ -221,7 +230,7 @@ export default function Home() {
           지금 바로<br />시작해보세요
         </h2>
         <p className="mb-10 md:mb-12 text-base md:text-lg" style={{ color: '#9C7B6B' }}>부모님께 드리는 가장 과학적인 선물</p>
-        <a href="/subscribe" className="inline-block px-10 md:px-12 py-4 md:py-5 rounded-full text-sm md:text-base font-bold hover:opacity-90 transition-opacity" style={{ backgroundColor: '#FAF7F2', color: '#3B2314' }}>
+        <a href="/mbti" className="inline-block px-10 md:px-12 py-4 md:py-5 rounded-full text-sm md:text-base font-bold hover:opacity-90 transition-opacity" style={{ backgroundColor: '#FAF7F2', color: '#3B2314' }}>
           구독 시작하기
         </a>
       </section>

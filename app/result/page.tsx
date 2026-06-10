@@ -1,7 +1,8 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import { BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, Pill, ChevronDown } from 'lucide-react';
+import { BatteryLow, Moon, Salad, Shield, Bone, HeartPulse, Pill, ChevronDown, Lock, Check } from 'lucide-react';
+import { useSession, signIn } from 'next-auth/react';
 
 const results: Record<string, { Icon: React.ComponentType<{ size?: number; strokeWidth?: number; style?: React.CSSProperties; className?: string }>; desc: string; keyword: string; supplements: { name: string; reason: string; tag: string }[] }> = {
   피로누적형: {
@@ -78,6 +79,7 @@ function ResultContent() {
   const type = searchParams.get('type') || '피로누적형';
   const result = results[type] || results['피로누적형'];
   const Icon = result.Icon;
+  const { status } = useSession();
 
   const [realProducts, setRealProducts] = useState<RealProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,6 +99,51 @@ function ResultContent() {
     }
     fetchProducts();
   }, [result.keyword]);
+
+  // 로그인 게이트: 설문은 끝났지만, 결과를 보려면 로그인이 필요합니다.
+  if (status !== 'authenticated') {
+    return (
+      <main style={{ fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", backgroundColor: '#FAF7F2', minHeight: '100vh' }}>
+        <nav style={{ backgroundColor: 'rgba(250,247,242,0.92)', borderBottom: '1px solid #E8DDD6' }} className="px-8 py-5 flex items-center justify-between">
+          <a href="/" className="text-xl font-bold" style={{ color: '#3B2314' }}>바른한포</a>
+          <a href="/mbti" className="text-sm" style={{ color: '#9C7B6B' }}>다시 테스트하기</a>
+        </nav>
+
+        {status === 'loading' ? (
+          <div className="text-center py-32" style={{ color: '#9C7B6B' }}>불러오는 중...</div>
+        ) : (
+          <div className="max-w-md mx-auto px-6 py-20 md:py-28 text-center">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-1.5 rounded-full mb-8" style={{ backgroundColor: '#E8DDD6', color: '#5C3D2E' }}>
+              <Check size={14} strokeWidth={3} /> 설문 완료
+            </span>
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: '#F2EBE3' }}>
+                <Lock size={34} strokeWidth={1.5} style={{ color: '#5C3D2E' }} />
+              </div>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-snug" style={{ color: '#3B2314' }}>
+              결과가 준비됐어요
+            </h1>
+            <p className="text-base leading-relaxed mb-10" style={{ color: '#7A5C4E' }}>
+              로그인하면 부모님께 딱 맞는<br />
+              건강 유형과 맞춤 영양제 결과를<br />
+              바로 확인할 수 있어요.
+            </p>
+            <button
+              onClick={() => signIn(undefined, { callbackUrl: `/result?type=${encodeURIComponent(type)}` })}
+              className="w-full py-5 rounded-full font-medium hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#5C3D2E', color: '#FAF7F2' }}
+            >
+              로그인하고 결과 확인하기
+            </button>
+            <p className="text-xs mt-5" style={{ color: '#9C7B6B' }}>
+              결과 저장과 구독 관리를 위해 로그인이 필요해요.
+            </p>
+          </div>
+        )}
+      </main>
+    );
+  }
 
   return (
     <main style={{ fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif", backgroundColor: '#FAF7F2', minHeight: '100vh' }}>
