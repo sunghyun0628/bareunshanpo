@@ -26,6 +26,8 @@ function KakaoIcon() {
 function LoginContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
+  // 이메일 매직링크(Resend) 검증 끝나면 true로 바꾸면 다시 노출됩니다.
+  const EMAIL_ENABLED = false;
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -77,12 +79,15 @@ function LoginContent() {
             </button>
           </div>
 
+          {EMAIL_ENABLED && (
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px" style={{ backgroundColor: '#E8DDD6' }} />
             <span className="text-xs" style={{ color: '#9C7B6B' }}>또는 이메일로</span>
             <div className="flex-1 h-px" style={{ backgroundColor: '#E8DDD6' }} />
           </div>
+          )}
 
+          {EMAIL_ENABLED && (
           <form onSubmit={handleEmail} className="space-y-3">
             <input
               type="email"
@@ -103,6 +108,7 @@ function LoginContent() {
               {submitting ? '메일 보내는 중...' : '이메일로 로그인 링크 받기'}
             </button>
           </form>
+          )}
 
           <p className="text-xs text-center mt-8 leading-relaxed" style={{ color: '#9C7B6B' }}>
             로그인 시 결과 저장과 구독 관리를 위한<br />최소한의 정보(이름·프로필)만 수집합니다.
