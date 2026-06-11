@@ -14,6 +14,7 @@ export default function Home() {
           <a href="#how" className="hover:text-stone-900 transition-colors">이용방법</a>
           <a href="#mbti" className="hover:text-stone-900 transition-colors">건강 MBTI</a>
           <a href="#result" className="hover:text-stone-900 transition-colors">추천 결과</a>
+          <a href="/medicine" className="hover:text-stone-900 transition-colors">복용약 확인</a>
         </div>
         <div className="flex items-center gap-3 md:gap-4">
           {session?.user ? (
