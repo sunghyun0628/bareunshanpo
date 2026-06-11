@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       `https://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList` +
       `?serviceKey=${apiKey}&itemName=${encodeURIComponent(name)}&type=json&numOfRows=5&pageNo=1`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     const text = await res.text();
 
     // 미승인/오류 시 data.go.kr이 "Forbidden" 등 비-JSON 텍스트를 반환

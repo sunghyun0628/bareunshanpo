@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
   try {
     const url = `https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?serviceKey=${apiKey}&pageNo=1&numOfRows=100&type=json`;
 
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
 
     const buffer = await res.arrayBuffer();
     const decoder = new TextDecoder('utf-8');
