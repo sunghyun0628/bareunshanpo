@@ -78,7 +78,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
+      <section id="about" data-reveal className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-4 md:mb-6" style={{ color: '#9C7B6B' }}>WHY 바른한포</p>
           <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-12 md:mb-20" style={{ color: '#3B2314' }}>
@@ -101,7 +101,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="how" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
+      <section id="how" data-reveal className="py-20 md:py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
         <div className="max-w-6xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-4 md:mb-6" style={{ color: '#9C7B6B' }}>HOW IT WORKS</p>
           <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-12 md:mb-20" style={{ color: '#3B2314' }}>
@@ -124,7 +124,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="mbti" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
+      <section id="mbti" data-reveal className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
         <div className="max-w-4xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-4 md:mb-6" style={{ color: '#9C7B6B' }}>건강 MBTI</p>
           <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-4 md:mb-6" style={{ color: '#3B2314' }}>
@@ -153,7 +153,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="result" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
+      <section id="result" data-reveal className="py-20 md:py-32 px-6" style={{ backgroundColor: '#FAF7F2' }}>
         <div className="max-w-2xl mx-auto">
           <p className="text-xs font-bold tracking-widest uppercase mb-4 md:mb-6" style={{ color: '#9C7B6B' }}>RESULT</p>
           <h2 className="text-3xl md:text-5xl font-bold leading-tight tracking-tight mb-12 md:mb-20" style={{ color: '#3B2314' }}>
@@ -193,7 +193,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="pharmacist" className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
+      <section id="pharmacist" data-reveal className="py-20 md:py-32 px-6" style={{ backgroundColor: '#F2EBE3' }}>
         <div className="max-w-4xl mx-auto text-center">
           <span className="inline-block text-xs font-bold px-4 py-1.5 rounded-full mb-6" style={{ backgroundColor: '#E8DDD6', color: '#7A5C4E' }}>
             준비 중 · 오픈 예정
